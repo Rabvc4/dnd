@@ -19,3 +19,13 @@ var InputText = function() {
   var NumberOfSides = RollArray[1];
   document.getElementById("rollResult").innerHTML = "Number of Dice: " + NumberOfDice + "<br>" + "Number of Sides: " + NumberOfSides + "<br>" + "Modifier: " + Modifier;
 }
+
+function sumAll() {
+    var i, sum = 0;
+    for(i = 0; i < arguments.length; i++) {
+        sum += arguments[i];
+    }
+    return sum;
+}
+document.getElementById("demo").innerHTML =
+sumAll(1, 123, 500, 115, 44, 88);
