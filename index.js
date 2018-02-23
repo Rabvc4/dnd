@@ -1,31 +1,96 @@
-var SumButtons = function() {
-  var a = parseInt(document.getElementById("InputNumber1").value);
-  var b = parseInt(document.getElementById("InputNumber2").value);
-  document.getElementById("sumNumbers").innerHTML = a+b;
+var getSum = function(total, num) {
+  //Returns total of integers in list
+  return total + num;
 }
 
-var RollDice = function() {
-  var NumberOfSides = parseInt(document.getElementById("InputNumber1").value);
-  var RollResult = Math.floor((Math.random() * NumberOfSides) + 1);
-  document.getElementById("rollResult").innerHTML = RollResult;
+var RollDie = function(NumberOfSides) {
+    //Returns random number between 1 and Number
+    var RollResult = Math.floor((Math.random() * NumberOfSides) + 1);
+    return RollResult;
 }
 
-var InputText = function() {
+var makePretty = function(InputString) {
+    var newList = "";
+    var i;
+    for (i = 0; i < InputString.length; i++) {
+      FlavorText = "</br>"
+      if (InputString[i] == 0) {
+          FlavorText = " You rolled like you fuck: TERRIBLY" + "</br>";
+      } else if (InputString[i] == 20) {
+          FlavorText = " Natural 20! Look at Mr. Big Swinging Dick!" + "</br>";
+      }
+
+      newList = newList + "Roll " + (i + 1) + ": " + InputString[i] + FlavorText;
+
+    }
+    return newList;
+}
+
+var TranslateRoll = function() {
   var UserInput = document.getElementById("InputNumber1").value;
   var ModifierArray = UserInput.split("+");
   var Modifier = ModifierArray[1];
   var RollArray = ModifierArray[0].split("d");
   var NumberOfDice = RollArray[0];
   var NumberOfSides = RollArray[1];
-  document.getElementById("rollResult").innerHTML = "Number of Dice: " + NumberOfDice + "<br>" + "Number of Sides: " + NumberOfSides + "<br>" + "Modifier: " + Modifier;
+  document.getElementById("rollsMade").innerHTML = "Number of Dice: " + NumberOfDice + "<br>" + "Number of Sides: " + NumberOfSides + "<br>" + "Modifier: " + Modifier + "<br>";
+
+  RollerSkate(NumberOfDice, NumberOfSides);
 }
 
-function sumAll() {
-    var i, sum = 0;
-    for(i = 0; i < arguments.length; i++) {
-        sum += arguments[i];
-    }
-    return sum;
+var EvaluateString = function(InputString) {
+  if (parseInt(InputString)) {
+    return false;
+  } else {
+    return true;
+  }
 }
-document.getElementById("demo").innerHTML =
-sumAll(1, 123, 500, 115, 44, 88);
+
+var RollerSkate = function(NumberOfDice, NumberOfSides) {
+  newString = [];
+  var i;
+  for (i = 0; i < NumberOfDice; i++) {
+      newString[i] = RollDie(NumberOfSides);
+  }
+  document.getElementById("rollResult").innerHTML = makePretty(newString) + "Total: " + newString.reduce(getSum);
+}
+
+var SeparateRolls = function(InputString) {
+  var pattern = /[A-Z][a-z]+/g;
+  var i = 0;
+  var Match;
+  var AttackArray = [];
+  var Start = 0;
+  var End = 0;
+
+  do {
+      Match = pattern.exec(InputString);
+      if (Match) {
+
+          End = Match.index + Match[0].length;
+
+          AttackArray[i] = InputString.slice(Start, End);
+          Start = End + 3;
+          i = i + 1;
+      }
+    } while (Match);
+    return AttackArray;
+}
+
+var Main = function() {
+  var UserInput = document.getElementById("InputNumber1").value;
+  var Test = "";
+  var Rolls = [];
+  var i;
+
+  if (EvaluateString(UserInput)) {
+    document.getElementById("rollResult").innerHTML = "Please enter a valid roll";
+    exit();
+  } else {
+    Rolls = SeparateRolls(UserInput);
+    for (i = 0; i < Rolls.length; i++) {
+      Test += TranslateRoll(Rolls[i]);
+    }
+  }
+
+}
